@@ -125,7 +125,7 @@ func main() {
 │          │         │         │         │           │
 │  ┌───────▼──┐ ┌────▼──┐ ┌───▼───┐ ┌───▼────────┐  │
 │  │  IOTA    │ │Hedera │ │did:key│ │ Future     │  │
-│  │ (Phase 3)│ │(Phs 4)│ │  ✓    │ │ backends   │  │
+│  │  ✓       │ │  ✓    │ │  ✓    │ │ backends   │  │
 │  └──────────┘ └───────┘ └───────┘ └────────────┘  │
 └─────────────────────────────────────────────────┘
 ```
@@ -179,11 +179,24 @@ go/
 ├── revocation.go                # Signed revocation list management
 ├── queue.go                     # SQLite-backed offline anchor queue
 ├── backends/
-│   └── didkey/
-│       └── didkey.go            # did:key implementation (offline-only)
+│   ├── didkey/
+│   │   └── didkey.go            # did:key (offline-only, no network)
+│   ├── hedera/
+│   │   ├── config.go            # Hedera network config
+│   │   ├── anchor.go            # HCS topic message anchoring
+│   │   ├── did.go               # did:hedera via HCS topics
+│   │   ├── mirror.go            # Mirror Node REST client
+│   │   └── hedera_test.go       # 11 tests
+│   └── iota/
+│       ├── config.go            # IOTA Rebased config
+│       ├── anchor.go            # Move contract anchoring
+│       ├── did.go               # did:iota on-chain DIDs
+│       ├── rpc.go               # JSON-RPC 2.0 client
+│       ├── signing.go           # Ed25519 intent-message signing
+│       └── iota_test.go         # Tests
 └── internal/
     └── base58/
-        └── base58.go            # Base58btc encode/decode (vendored)
+        └── base58.go            # Base58btc encode/decode
 ```
 
 ## Design Constraints
@@ -197,7 +210,7 @@ go/
 
 ```sh
 cd go/
-go test ./...           # run all tests (74 tests)
+go test ./...           # run all tests (85+ tests)
 go test -race ./...     # race detector
 go test -bench=. ./...  # benchmarks
 go vet ./...            # static analysis
@@ -229,8 +242,8 @@ Built-in type constants for healthcare and data integrity use cases:
 
 - [x] Phase 1: Core interfaces + `did:key` + Merkle tree
 - [x] Phase 2: Verifiable Credentials + offline queue
-- [ ] Phase 3: IOTA backend (`did:iota` + Tangle anchoring)
-- [ ] Phase 4: Hedera backend (`did:hedera` + HCS anchoring)
+- [x] Phase 3: IOTA Rebased backend (`did:iota` + Move contract anchoring)
+- [x] Phase 4: Hedera backend (`did:hedera` + HCS anchoring)
 - [ ] Phase 5: Dart/Python ports + documentation
 
 ## Licence
