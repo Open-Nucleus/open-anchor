@@ -1,0 +1,9 @@
+[package]
+name = "open_anchor"
+edition = "2024.beta"
+
+[dependencies]
+Iota = { git = "https://github.com/iotaledger/iota.git", subdir = "crates/iota-framework/packages/iota-framework", rev = "testnet" }
+
+[addresses]
+open_anchor = "0x0"
